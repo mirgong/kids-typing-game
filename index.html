@@ -20,7 +20,7 @@
                 <a href="#home" class="nav-link active"><i class="fas fa-home"></i> 首页</a>
                 <a href="#lessons" class="nav-link"><i class="fas fa-book"></i> 课程</a>
                 <a href="#games" class="nav-link"><i class="fas fa-gamepad"></i> 游戏</a>
-                <a href="#progress" class="nav-link"><i class="fas fa-chart-line"></i> 进度</a>
+                <a href="#progress" class="nav-link"><i class="fas fa-trophy"></i> 成就</a>
             </nav>
         </header>
 
@@ -34,15 +34,15 @@
                         <p class="subtitle">和可爱的小动物们一起学习打字，成为键盘小能手！</p>
                         <div class="hero-animals">
                             <div class="animal monkey">
-                                <i class="fas fa-monkey"></i>
+                                <span class="animal-emoji">🐵</span>
                                 <span>猴子打字员</span>
                             </div>
                             <div class="animal panda">
-                                <i class="fas fa-paw"></i>
+                                <span class="animal-emoji">🐼</span>
                                 <span>熊猫教练</span>
                             </div>
                             <div class="animal rabbit">
-                                <i class="fas fa-rabbit"></i>
+                                <span class="animal-emoji">🐰</span>
                                 <span>兔子助手</span>
                             </div>
                         </div>
@@ -70,28 +70,28 @@
                             <i class="fas fa-graduation-cap"></i>
                         </div>
                         <h3>循序渐进</h3>
-                        <p>从简单字母到复杂单词，逐步提升打字技能</p>
+                        <p>5 个级别，从字母到句子，逐步提升打字技能</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-gamepad"></i>
                         </div>
                         <h3>趣味游戏</h3>
-                        <p>通过游戏学习，让打字变得有趣不枯燥</p>
+                        <p>多种游戏模式，让打字变得有趣不枯燥</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-trophy"></i>
                         </div>
                         <h3>成就系统</h3>
-                        <p>完成挑战获得奖章，激励小朋友持续学习</p>
+                        <p>完成挑战获得奖章，激励持续学习</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-child"></i>
                         </div>
                         <h3>儿童友好</h3>
-                        <p>专为5-10岁儿童设计，界面简单易懂</p>
+                        <p>专为 5-10 岁儿童设计，界面简单易懂</p>
                     </div>
                 </div>
             </section>
@@ -102,44 +102,7 @@
                 <p class="section-subtitle">选择适合你的课程开始学习吧！</p>
                 
                 <div class="lessons-container">
-                    <div class="lesson-card" data-level="1" onclick="startLesson(1)">
-                        <div class="lesson-badge beginner">初级</div>
-                        <h3>字母探险</h3>
-                        <p>学习基本字母键位</p>
-                        <div class="lesson-stats">
-                            <span><i class="fas fa-key"></i> 8个字母</span>
-                            <span><i class="fas fa-clock"></i> 10分钟</span>
-                        </div>
-                        <div class="lesson-progress">
-                            <div class="progress-bar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="lesson-card" data-level="2" onclick="startLesson(2)">
-                        <div class="lesson-badge intermediate">中级</div>
-                        <h3>单词森林</h3>
-                        <p>练习简单单词打字</p>
-                        <div class="lesson-stats">
-                            <span><i class="fas fa-key"></i> 20个单词</span>
-                            <span><i class="fas fa-clock"></i> 20分钟</span>
-                        </div>
-                        <div class="lesson-progress">
-                            <div class="progress-bar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="lesson-card" data-level="3" onclick="startLesson(3)">
-                        <div class="lesson-badge advanced">高级</div>
-                        <h3>句子城堡</h3>
-                        <p>挑战完整句子打字</p>
-                        <div class="lesson-stats">
-                            <span><i class="fas fa-key"></i> 15个句子</span>
-                            <span><i class="fas fa-clock"></i> 30分钟</span>
-                        </div>
-                        <div class="lesson-progress">
-                            <div class="progress-bar" style="width: 0%"></div>
-                        </div>
-                    </div>
+                    <!-- 课程卡片将由 JavaScript 动态生成 -->
                 </div>
             </section>
 
@@ -173,7 +136,16 @@
                         </div>
                         <h3>打字冒险</h3>
                         <p>打败怪物，拯救小动物</p>
-                        <button class="play-btn">开始游戏</button>
+                        <button class="play-btn coming-soon">即将推出</button>
+                    </div>
+                    
+                    <div class="game-card" onclick="startGame('keyboard-hero')">
+                        <div class="game-icon">
+                            <i class="fas fa-guitar"></i>
+                        </div>
+                        <h3>键盘英雄</h3>
+                        <p>跟随节奏敲击键盘</p>
+                        <button class="play-btn coming-soon">即将推出</button>
                     </div>
                 </div>
             </section>
@@ -186,9 +158,9 @@
                     </button>
                     <h2 id="practice-title">打字练习</h2>
                     <div class="stats">
-                        <span id="score">得分: 0</span>
-                        <span id="time">时间: 60s</span>
-                        <span id="accuracy">准确率: 100%</span>
+                        <span id="score">得分：0</span>
+                        <span id="time">时间：60s</span>
+                        <span id="accuracy">准确率：100%</span>
                     </div>
                 </div>
                 
@@ -254,7 +226,7 @@
                 </div>
             </section>
 
-            <!-- 进度区域 -->
+            <!-- 进度/成就区域 -->
             <section id="progress" class="section">
                 <h2 class="section-title">学习进度</h2>
                 
@@ -262,18 +234,7 @@
                     <div class="progress-card">
                         <h3><i class="fas fa-medal"></i> 成就</h3>
                         <div class="achievements">
-                            <div class="achievement unlocked">
-                                <i class="fas fa-key"></i>
-                                <span>字母小能手</span>
-                            </div>
-                            <div class="achievement locked">
-                                <i class="fas fa-keyboard"></i>
-                                <span>单词大师</span>
-                            </div>
-                            <div class="achievement locked">
-                                <i class="fas fa-crown"></i>
-                                <span>打字冠军</span>
-                            </div>
+                            <!-- 成就将由 JavaScript 动态生成 -->
                         </div>
                     </div>
                     
@@ -298,13 +259,20 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="progress-card">
+                        <h3><i class="fas fa-history"></i> 最近活动</h3>
+                        <div class="recent-activity">
+                            <p>继续学习，创造你的记录！</p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
 
         <!-- 底部 -->
         <footer class="footer">
-            <p>© 2026 小键盘探险家 - 专为5-10岁儿童设计的打字学习网站</p>
+            <p>© 2026 小键盘探险家 - 专为 5-10 岁儿童设计的打字学习网站</p>
             <p>无需登录，直接开始学习！</p>
         </footer>
     </div>
@@ -313,7 +281,7 @@
     <div id="completion-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>恭喜完成！</h2>
+                <h2>🎉 恭喜完成！</h2>
                 <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
@@ -335,7 +303,10 @@
                         <span id="final-time">60s</span>
                     </div>
                 </div>
-                <button class="continue-btn" onclick="continueLearning()">继续学习</button>
+                <div class="modal-buttons">
+                    <button class="continue-btn" onclick="continueLearning()">继续学习</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
         </div>
     </div>
