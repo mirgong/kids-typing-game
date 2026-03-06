@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>字母雨游戏 - 小键盘探险家</title>
+    <title>字母雨打字游戏 - 小键盘探险家</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,10 +12,11 @@
             position: relative;
             width: 100%;
             height: 600px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             border-radius: 20px;
             overflow: hidden;
             margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
         
         #game-canvas {
@@ -32,23 +33,31 @@
             justify-content: space-between;
             pointer-events: none;
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .game-stat {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 15px 25px;
+            padding: 12px 20px;
             border-radius: 15px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 120px;
+            text-align: center;
         }
         
         .game-stat i {
-            margin-right: 10px;
+            margin-right: 8px;
             color: #ffd700;
         }
+        
+        .game-stat.lives i { color: #ff6b6b; }
+        .game-stat.combo i { color: #4ecdc4; }
+        .game-stat.speed i { color: #ffd700; }
         
         .game-over-modal {
             display: none;
@@ -57,7 +66,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -76,6 +85,7 @@
             max-width: 500px;
             width: 90%;
             animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
         
         .game-over-content h2 {
@@ -88,6 +98,31 @@
             font-weight: bold;
             color: #ffd700;
             margin: 20px 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-box .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
         
         .game-buttons {
@@ -95,6 +130,7 @@
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
         
         .game-btn {
@@ -132,27 +168,85 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 20;
+            padding: 20px;
         }
         
         .start-screen h2 {
             color: white;
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
         
-        .start-screen p {
+        .start-screen .subtitle {
             color: #ddd;
             font-size: 1.2rem;
             margin-bottom: 30px;
+        }
+        
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .setting-group {
+            margin-bottom: 25px;
+        }
+        
+        .setting-group h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .setting-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .setting-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 10px;
+            border-radius: 10px;
             text-align: center;
-            line-height: 1.6;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .setting-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .setting-option.selected {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-color: #ffd700;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+        
+        .setting-option i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        
+        .setting-option span {
+            font-size: 0.95rem;
+            font-weight: bold;
         }
         
         .start-btn-large {
@@ -166,6 +260,7 @@
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            margin-top: 20px;
         }
         
         .start-btn-large:hover {
@@ -179,6 +274,7 @@
             border-radius: 15px;
             margin: 20px;
             color: white;
+            max-width: 500px;
         }
         
         .instructions h3 {
@@ -247,6 +343,61 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         }
+        
+        /* 输入框区域 */
+        .input-area-game {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 600px;
+            z-index: 15;
+        }
+        
+        #game-input {
+            width: 100%;
+            padding: 15px 25px;
+            font-size: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        #game-input:focus {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+        
+        /* 难度颜色 */
+        .difficulty-easy { color: #2ecc71; }
+        .difficulty-medium { color: #f39c12; }
+        .difficulty-hard { color: #e74c3c; }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-stat {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+                min-width: 80px;
+            }
+            
+            .setting-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-buttons {
+                flex-direction: column;
+            }
+            
+            .game-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -265,47 +416,96 @@
 
         <main class="main-content">
             <h2 style="text-align: center; color: #333; margin-bottom: 10px;">
-                <i class="fas fa-apple-alt" style="color: #ff6b6b;"></i> 字母雨游戏
+                <i class="fas fa-apple-alt" style="color: #ff6b6b;"></i> 字母雨打字游戏
             </h2>
             <p style="text-align: center; color: #666; margin-bottom: 20px;">
-                接住掉落的字母，输入正确的键！
+                选择模式和难度，开始挑战你的打字速度！
             </p>
             
             <div class="game-container">
                 <canvas id="game-canvas"></canvas>
                 
-                <div class="game-ui">
+                <div class="game-ui" id="game-ui" style="display: none;">
                     <div class="game-stat">
                         <i class="fas fa-star"></i>
                         <span>得分：<span id="score">0</span></span>
                     </div>
-                    <div class="game-stat">
+                    <div class="game-stat lives">
                         <i class="fas fa-heart"></i>
                         <span>生命：<span id="lives">3</span></span>
                     </div>
-                    <div class="game-stat">
+                    <div class="game-stat combo">
                         <i class="fas fa-bolt"></i>
                         <span>连击：<span id="combo">0</span></span>
                     </div>
+                    <div class="game-stat speed">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>速度：<span id="speed">1.0x</span></span>
+                    </div>
+                </div>
+                
+                <div class="input-area-game" id="input-area" style="display: none;">
+                    <input type="text" id="game-input" placeholder="输入显示的字母/单词..." autocomplete="off">
                 </div>
                 
                 <div class="combo-display" id="combo-display"></div>
                 
                 <div class="start-screen" id="start-screen">
-                    <h2>🍎 字母雨</h2>
+                    <h2>🌧️ 字母雨</h2>
+                    <p class="subtitle">练习打字速度与准确性的趣味游戏</p>
+                    
+                    <div class="settings-panel">
+                        <div class="setting-group">
+                            <h3><i class="fas fa-gamepad"></i> 选择模式</h3>
+                            <div class="setting-options">
+                                <div class="setting-option selected" data-mode="letter" onclick="selectMode('letter')">
+                                    <i class="fas fa-font"></i>
+                                    <span>单字母</span>
+                                </div>
+                                <div class="setting-option" data-mode="word" onclick="selectMode('word')">
+                                    <i class="fas fa-spell-check"></i>
+                                    <span>英文单词</span>
+                                </div>
+                                <div class="setting-option" data-mode="chinese" onclick="selectMode('chinese')">
+                                    <i class="fas fa-language"></i>
+                                    <span>中文词语</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <h3><i class="fas fa-sliders-h"></i> 选择难度</h3>
+                            <div class="setting-options">
+                                <div class="setting-option selected" data-difficulty="easy" onclick="selectDifficulty('easy')">
+                                    <i class="fas fa-smile"></i>
+                                    <span>简单</span>
+                                </div>
+                                <div class="setting-option" data-difficulty="medium" onclick="selectDifficulty('medium')">
+                                    <i class="fas fa-meh"></i>
+                                    <span>中等</span>
+                                </div>
+                                <div class="setting-option" data-difficulty="hard" onclick="selectDifficulty('hard')">
+                                    <i class="fas fa-frown"></i>
+                                    <span>困难</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="start-btn-large" onclick="startGame()">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                    
                     <div class="instructions">
                         <h3>游戏说明</h3>
                         <ul>
-                            <li>字母会从屏幕上方掉落</li>
-                            <li>在字母落地前输入正确的字母</li>
-                            <li>接住字母得分，漏掉扣生命</li>
+                            <li>字母/单词会从屏幕上方掉落</li>
+                            <li>在输入框中输入正确内容</li>
+                            <li>接住目标得分，漏掉扣生命</li>
                             <li>连续接住有连击奖励</li>
                             <li>生命归零游戏结束</li>
                         </ul>
                     </div>
-                    <button class="start-btn-large" onclick="startGame()">
-                        <i class="fas fa-play"></i> 开始游戏
-                    </button>
                 </div>
             </div>
             
@@ -320,7 +520,7 @@
         </main>
 
         <footer class="footer">
-            <p>© 2026 小键盘探险家 - 字母雨游戏</p>
+            <p>© 2026 小键盘探险家 - 字母雨打字游戏</p>
         </footer>
     </div>
 
@@ -330,14 +530,22 @@
             <h2>🎮 游戏结束</h2>
             <p>你的最终得分</p>
             <div class="final-score" id="final-score">0</div>
-            <div style="display: flex; justify-content: space-around; margin: 20px 0;">
-                <div>
-                    <div style="font-size: 2rem;" id="final-combo">0</div>
-                    <div style="font-size: 0.9rem;">最高连击</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value" id="final-combo">0</div>
+                    <div class="label">最高连击</div>
                 </div>
-                <div>
-                    <div style="font-size: 2rem;" id="final-accuracy">0%</div>
-                    <div style="font-size: 0.9rem;">准确率</div>
+                <div class="stat-box">
+                    <div class="value" id="final-accuracy">0%</div>
+                    <div class="label">准确率</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="final-caught">0</div>
+                    <div class="label">接住目标</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="final-missed">0</div>
+                    <div class="label">漏掉目标</div>
                 </div>
             </div>
             <div class="game-buttons">
@@ -352,6 +560,17 @@
     </div>
 
     <script>
+        // 游戏配置
+        const gameConfig = {
+            mode: 'letter', // letter, word, chinese
+            difficulty: 'easy', // easy, medium, hard
+            difficulties: {
+                easy: { spawnRate: 2000, fallSpeed: 1, maxLetters: 5 },
+                medium: { spawnRate: 1500, fallSpeed: 1.5, maxLetters: 8 },
+                hard: { spawnRate: 1000, fallSpeed: 2, maxLetters: 12 }
+            }
+        };
+        
         // 游戏变量
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
@@ -362,14 +581,32 @@
         let maxCombo = 0;
         let correctCount = 0;
         let totalCount = 0;
-        let letters = [];
-        let spawnRate = 2000; // 生成间隔（毫秒）
+        let targets = [];
         let lastSpawn = 0;
-        let gameSpeed = 1; // 游戏速度
+        let gameSpeed = 1;
+        let caughtCount = 0;
+        let missedCount = 0;
         let animationId;
         
-        // 字母配置
-        const letterColors = [
+        // 词库
+        const wordBank = {
+            letter: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+            word: [
+                'CAT', 'DOG', 'SUN', 'MOON', 'STAR', 'TREE', 'FISH', 'BIRD',
+                'BOOK', 'BALL', 'MILK', 'CAKE', 'FLOWER', 'APPLE', 'ORANGE',
+                'HAPPY', 'SMILE', 'WATER', 'FRIEND', 'SCHOOL', 'MUSIC', 'DANCE',
+                'LOVE', 'PEACE', 'DREAM', 'HOPE', 'LIGHT', 'POWER', 'TIME', 'SPACE'
+            ],
+            chinese: [
+                '天空', '大地', '阳光', '月亮', '星星', '树木', '花朵', '小草',
+                '小鸟', '小鱼', '小猫', '小狗', '书本', '铅笔', '学校', '老师',
+                '朋友', '家人', '快乐', '幸福', '梦想', '希望', '勇敢', '坚强',
+                '美丽', '聪明', '善良', '友好', '和平', '自由', '春天', '夏天'
+            ]
+        };
+        
+        // 颜色配置
+        const targetColors = [
             '#ff6b6b', '#4ecdc4', '#ffd700', '#9b59b6', 
             '#2ecc71', '#e74c3c', '#3498db', '#f39c12'
         ];
@@ -383,15 +620,34 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         
-        // 字母类
-        class Letter {
+        // 选择模式
+        function selectMode(mode) {
+            gameConfig.mode = mode;
+            document.querySelectorAll('[data-mode]').forEach(el => {
+                el.classList.toggle('selected', el.dataset.mode === mode);
+            });
+        }
+        
+        // 选择难度
+        function selectDifficulty(difficulty) {
+            gameConfig.difficulty = difficulty;
+            document.querySelectorAll('[data-difficulty]').forEach(el => {
+                el.classList.toggle('selected', el.dataset.difficulty === difficulty);
+            });
+        }
+        
+        // 目标类
+        class Target {
             constructor() {
-                this.char = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-                this.x = Math.random() * (canvas.width - 50) + 25;
+                const bank = wordBank[gameConfig.mode];
+                this.text = bank[Math.floor(Math.random() * bank.length)];
+                this.x = Math.random() * (canvas.width - 100) + 50;
                 this.y = -50;
-                this.speed = (Math.random() * 1 + 1) * gameSpeed;
-                this.radius = 30;
-                this.color = letterColors[Math.floor(Math.random() * letterColors.length)];
+                const config = gameConfig.difficulties[gameConfig.difficulty];
+                this.speed = (Math.random() * 0.5 + config.fallSpeed) * gameSpeed;
+                this.width = this.text.length * 20 + 20;
+                this.height = 40;
+                this.color = targetColors[Math.floor(Math.random() * targetColors.length)];
                 this.caught = false;
                 this.missed = false;
             }
@@ -403,9 +659,9 @@
             draw() {
                 if (this.caught) return;
                 
-                // 绘制字母
+                // 绘制背景
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.roundRect(this.x - this.width/2, this.y - this.height/2, this.width, this.height, 10);
                 ctx.fillStyle = this.color;
                 ctx.fill();
                 ctx.strokeStyle = 'white';
@@ -413,20 +669,20 @@
                 ctx.stroke();
                 ctx.closePath();
                 
-                // 绘制字母字符
+                // 绘制文字
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 24px Arial';
+                ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(this.char, this.x, this.y);
+                ctx.fillText(this.text, this.x, this.y);
                 
-                // 绘制阴影效果
+                // 发光效果
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 15;
             }
             
-            isCaught(inputChar) {
-                return inputChar.toUpperCase() === this.char && !this.caught && !this.missed;
+            isCaught(inputText) {
+                return inputText.toUpperCase() === this.text.toUpperCase() && !this.caught && !this.missed;
             }
             
             isMissed() {
@@ -437,7 +693,10 @@
         // 开始游戏
         function startGame() {
             document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'flex';
+            document.getElementById('input-area').style.display = 'block';
             document.getElementById('restart-btn').style.display = 'inline-block';
+            
             gameRunning = true;
             score = 0;
             lives = 3;
@@ -445,11 +704,14 @@
             maxCombo = 0;
             correctCount = 0;
             totalCount = 0;
-            letters = [];
-            spawnRate = 2000;
+            caughtCount = 0;
+            missedCount = 0;
+            targets = [];
             gameSpeed = 1;
             lastSpawn = Date.now();
             
+            document.getElementById('game-input').value = '';
+            document.getElementById('game-input').focus();
             updateUI();
             gameLoop();
         }
@@ -458,30 +720,33 @@
         function gameLoop() {
             if (!gameRunning) return;
             
-            // 清空画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 生成新字母
+            // 生成新目标
             const now = Date.now();
-            if (now - lastSpawn > spawnRate) {
-                letters.push(new Letter());
+            const config = gameConfig.difficulties[gameConfig.difficulty];
+            
+            if (now - lastSpawn > config.spawnRate && targets.length < config.maxLetters) {
+                targets.push(new Target());
                 lastSpawn = now;
                 
                 // 逐渐增加难度
-                if (spawnRate > 800) spawnRate -= 20;
-                gameSpeed += 0.01;
+                if (config.spawnRate > 500) {
+                    config.spawnRate -= 10;
+                }
+                gameSpeed += 0.005;
             }
             
-            // 更新和绘制字母
-            letters.forEach((letter, index) => {
-                letter.update();
-                letter.draw();
+            // 更新和绘制目标
+            targets.forEach((target) => {
+                target.update();
+                target.draw();
                 
-                // 检查是否漏掉
-                if (letter.isMissed()) {
-                    letter.missed = true;
+                if (target.isMissed()) {
+                    target.missed = true;
                     lives--;
                     combo = 0;
+                    missedCount++;
                     updateUI();
                     
                     if (lives <= 0) {
@@ -490,46 +755,52 @@
                 }
             });
             
-            // 移除超出屏幕的字母
-            letters = letters.filter(l => l.y < canvas.height + 100);
+            // 移除超出屏幕的目标
+            targets = targets.filter(t => t.y < canvas.height + 100);
             
             animationId = requestAnimationFrame(gameLoop);
         }
         
         // 处理键盘输入
-        document.addEventListener('keydown', (e) => {
+        document.getElementById('game-input').addEventListener('input', (e) => {
             if (!gameRunning) return;
             
-            const key = e.key.toUpperCase();
+            const input = e.target.value.trim();
             
-            // 只处理字母键
-            if (key.length === 1 && key >= 'A' && key <= 'Z') {
+            if (input.length > 0) {
                 totalCount++;
                 
-                // 查找最近的匹配字母
-                const caughtLetter = letters.find(l => l.isCaught(key));
+                // 查找匹配的目标
+                const caughtTarget = targets.find(t => t.isCaught(input));
                 
-                if (caughtLetter) {
-                    caughtLetter.caught = true;
-                    score += 10 + combo; // 连击奖励
+                if (caughtTarget) {
+                    caughtTarget.caught = true;
+                    const baseScore = gameConfig.mode === 'letter' ? 10 : 
+                                     gameConfig.mode === 'word' ? 20 : 30;
+                    score += baseScore + combo;
                     combo++;
                     correctCount++;
+                    caughtCount++;
                     
                     if (combo > maxCombo) maxCombo = combo;
                     
-                    // 显示连击效果
                     if (combo >= 5) {
                         showComboEffect(combo);
                     }
                     
                     updateUI();
-                    
-                    // 播放接住音效
                     playCatchSound();
-                } else {
-                    combo = 0;
-                    updateUI();
+                    
+                    // 清空输入框
+                    e.target.value = '';
                 }
+            }
+        });
+        
+        // 保持输入框焦点
+        document.addEventListener('click', () => {
+            if (gameRunning) {
+                document.getElementById('game-input').focus();
             }
         });
         
@@ -549,6 +820,7 @@
             document.getElementById('score').textContent = score;
             document.getElementById('lives').textContent = lives;
             document.getElementById('combo').textContent = combo;
+            document.getElementById('speed').textContent = gameSpeed.toFixed(1) + 'x';
         }
         
         // 游戏结束
@@ -561,12 +833,15 @@
             document.getElementById('final-score').textContent = score;
             document.getElementById('final-combo').textContent = maxCombo;
             document.getElementById('final-accuracy').textContent = accuracy + '%';
+            document.getElementById('final-caught').textContent = caughtCount;
+            document.getElementById('final-missed').textContent = missedCount;
             document.getElementById('game-over-modal').classList.add('show');
             
             // 保存最高分
-            const savedScore = localStorage.getItem('fallingLettersHighScore') || 0;
+            const key = `fallingLettersHighScore_${gameConfig.mode}_${gameConfig.difficulty}`;
+            const savedScore = localStorage.getItem(key) || 0;
             if (score > savedScore) {
-                localStorage.setItem('fallingLettersHighScore', score);
+                localStorage.setItem(key, score);
             }
             
             playGameOverSound();
@@ -577,8 +852,10 @@
             document.getElementById('game-over-modal').classList.remove('show');
             document.getElementById('start-screen').style.display = 'flex';
             document.getElementById('restart-btn').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'none';
+            document.getElementById('input-area').style.display = 'none';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            letters = [];
+            targets = [];
         }
         
         // 音效函数
@@ -627,7 +904,9 @@
         
         // 初始化
         resizeCanvas();
-        console.log('🍎 字母雨游戏已加载');
+        console.log('🌧️ 字母雨打字游戏已加载');
+        console.log('模式：单字母/英文单词/中文词语');
+        console.log('难度：简单/中等/困难');
     </script>
 </body>
 </html>
