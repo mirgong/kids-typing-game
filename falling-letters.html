@@ -344,33 +344,89 @@
             }
         }
         
-        /* 输入框区域 */
-        .input-area-game {
+        /* 虚拟键盘区域 */
+        .keyboard-area {
             position: absolute;
-            bottom: 20px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80%;
-            max-width: 600px;
+            width: 90%;
+            max-width: 800px;
+            z-index: 15;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .key {
+            min-width: 45px;
+            height: 50px;
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e2e8f0;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .key:hover {
+            background: linear-gradient(145deg, #4a5568, #2d3748);
+            transform: translateY(-2px);
+        }
+        
+        .key.active {
+            background: linear-gradient(145deg, #4ecdc4, #45b7af);
+            border-color: #ffd700;
+            color: white;
+            transform: translateY(2px);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .key.space {
+            min-width: 300px;
+        }
+        
+        .key.wide {
+            min-width: 70px;
+            font-size: 0.9rem;
+        }
+        
+        /* 当前输入显示 */
+        .current-input-display {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            min-width: 300px;
+            text-align: center;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 15;
         }
         
-        #game-input {
-            width: 100%;
-            padding: 15px 25px;
-            font-size: 1.5rem;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.9);
-            outline: none;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        #game-input:focus {
-            border-color: #4ecdc4;
-            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        .current-input-display span {
+            color: #4ecdc4;
         }
         
         /* 难度颜色 */
@@ -444,8 +500,46 @@
                     </div>
                 </div>
                 
-                <div class="input-area-game" id="input-area" style="display: none;">
-                    <input type="text" id="game-input" placeholder="输入显示的字母/单词..." autocomplete="off">
+                <div class="current-input-display" id="current-input" style="display: none;">
+                    输入：<span id="input-text"></span>
+                </div>
+                
+                <div class="keyboard-area" id="keyboard-area" style="display: none;">
+                    <div class="keyboard-row">
+                        <div class="key" data-key="Q">Q</div>
+                        <div class="key" data-key="W">W</div>
+                        <div class="key" data-key="E">E</div>
+                        <div class="key" data-key="R">R</div>
+                        <div class="key" data-key="T">T</div>
+                        <div class="key" data-key="Y">Y</div>
+                        <div class="key" data-key="U">U</div>
+                        <div class="key" data-key="I">I</div>
+                        <div class="key" data-key="O">O</div>
+                        <div class="key" data-key="P">P</div>
+                    </div>
+                    <div class="keyboard-row">
+                        <div class="key" data-key="A">A</div>
+                        <div class="key" data-key="S">S</div>
+                        <div class="key" data-key="D">D</div>
+                        <div class="key" data-key="F">F</div>
+                        <div class="key" data-key="G">G</div>
+                        <div class="key" data-key="H">H</div>
+                        <div class="key" data-key="J">J</div>
+                        <div class="key" data-key="K">K</div>
+                        <div class="key" data-key="L">L</div>
+                    </div>
+                    <div class="keyboard-row">
+                        <div class="key" data-key="Z">Z</div>
+                        <div class="key" data-key="X">X</div>
+                        <div class="key" data-key="C">C</div>
+                        <div class="key" data-key="V">V</div>
+                        <div class="key" data-key="B">B</div>
+                        <div class="key" data-key="N">N</div>
+                        <div class="key" data-key="M">M</div>
+                    </div>
+                    <div class="keyboard-row">
+                        <div class="key space" data-key=" ">空格</div>
+                    </div>
                 </div>
                 
                 <div class="combo-display" id="combo-display"></div>
@@ -690,11 +784,15 @@
             }
         }
         
+        // 当前输入
+        let currentInput = '';
+        
         // 开始游戏
         function startGame() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-ui').style.display = 'flex';
-            document.getElementById('input-area').style.display = 'block';
+            document.getElementById('keyboard-area').style.display = 'block';
+            document.getElementById('current-input').style.display = 'block';
             document.getElementById('restart-btn').style.display = 'inline-block';
             
             gameRunning = true;
@@ -709,9 +807,8 @@
             targets = [];
             gameSpeed = 1;
             lastSpawn = Date.now();
-            
-            document.getElementById('game-input').value = '';
-            document.getElementById('game-input').focus();
+            currentInput = '';
+            updateInputDisplay();
             updateUI();
             gameLoop();
         }
@@ -762,47 +859,80 @@
         }
         
         // 处理键盘输入
-        document.getElementById('game-input').addEventListener('input', (e) => {
+        document.addEventListener('keydown', (e) => {
             if (!gameRunning) return;
             
-            const input = e.target.value.trim();
+            const key = e.key.toUpperCase();
             
-            if (input.length > 0) {
-                totalCount++;
-                
-                // 查找匹配的目标
-                const caughtTarget = targets.find(t => t.isCaught(input));
-                
-                if (caughtTarget) {
-                    caughtTarget.caught = true;
-                    const baseScore = gameConfig.mode === 'letter' ? 10 : 
-                                     gameConfig.mode === 'word' ? 20 : 30;
-                    score += baseScore + combo;
-                    combo++;
-                    correctCount++;
-                    caughtCount++;
-                    
-                    if (combo > maxCombo) maxCombo = combo;
-                    
-                    if (combo >= 5) {
-                        showComboEffect(combo);
-                    }
-                    
-                    updateUI();
-                    playCatchSound();
-                    
-                    // 清空输入框
-                    e.target.value = '';
-                }
+            // 高亮键盘按键
+            highlightKey(key);
+            
+            // 只处理字母、空格和退格键
+            if (key.length === 1 && key >= 'A' && key <= 'Z') {
+                currentInput += key;
+                updateInputDisplay();
+                checkInput();
+            } else if (key === ' ') {
+                currentInput += ' ';
+                updateInputDisplay();
+                checkInput();
+            } else if (key === 'BACKSPACE') {
+                currentInput = currentInput.slice(0, -1);
+                updateInputDisplay();
             }
         });
         
-        // 保持输入框焦点
-        document.addEventListener('click', () => {
-            if (gameRunning) {
-                document.getElementById('game-input').focus();
+        // 高亮键盘按键
+        function highlightKey(key) {
+            const keyElement = document.querySelector(`.key[data-key="${key}"]`);
+            if (keyElement) {
+                keyElement.classList.add('active');
+                setTimeout(() => {
+                    keyElement.classList.remove('active');
+                }, 100);
             }
-        });
+        }
+        
+        // 更新输入显示
+        function updateInputDisplay() {
+            const display = document.getElementById('input-text');
+            if (display) {
+                display.textContent = currentInput || '_';
+            }
+        }
+        
+        // 检查输入
+        function checkInput() {
+            if (currentInput.length === 0) return;
+            
+            totalCount++;
+            
+            // 查找匹配的目标
+            const caughtTarget = targets.find(t => t.isCaught(currentInput));
+            
+            if (caughtTarget) {
+                caughtTarget.caught = true;
+                const baseScore = gameConfig.mode === 'letter' ? 10 : 
+                                 gameConfig.mode === 'word' ? 20 : 30;
+                score += baseScore + combo;
+                combo++;
+                correctCount++;
+                caughtCount++;
+                
+                if (combo > maxCombo) maxCombo = combo;
+                
+                if (combo >= 5) {
+                    showComboEffect(combo);
+                }
+                
+                updateUI();
+                playCatchSound();
+                
+                // 清空当前输入
+                currentInput = '';
+                updateInputDisplay();
+            }
+        }
         
         // 显示连击效果
         function showComboEffect(comboCount) {
@@ -853,9 +983,11 @@
             document.getElementById('start-screen').style.display = 'flex';
             document.getElementById('restart-btn').style.display = 'none';
             document.getElementById('game-ui').style.display = 'none';
-            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('keyboard-area').style.display = 'none';
+            document.getElementById('current-input').style.display = 'none';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             targets = [];
+            currentInput = '';
         }
         
         // 音效函数
