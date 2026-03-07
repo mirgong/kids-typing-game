@@ -119,7 +119,7 @@ const gameData = {
             title: '打字冒险',
             icon: '🐉',
             description: '打败怪物，拯救小动物',
-            status: 'coming-soon'
+            status: 'ready'
         },
         'keyboard-hero': {
             title: '键盘英雄',

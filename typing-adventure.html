@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打字冒险 - 小键盘探险家</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .adventure-section {
+            display: block;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .battle-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .player {
+            text-align: center;
+            position: relative;
+        }
+
+        .player-sprite {
+            font-size: 6rem;
+            animation: playerIdle 2s infinite;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        @keyframes playerIdle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .monster {
+            text-align: center;
+            position: relative;
+        }
+
+        .monster-sprite {
+            font-size: 8rem;
+            animation: monsterFloat 3s infinite;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+            transition: transform 0.3s;
+        }
+
+        .monster-sprite.hit {
+            animation: monsterHit 0.5s;
+        }
+
+        @keyframes monsterFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes monsterHit {
+            0%, 100% { transform: translateX(0); filter: brightness(1); }
+            25% { transform: translateX(-20px); filter: brightness(2); }
+            75% { transform: translateX(20px); filter: brightness(2); }
+        }
+
+        .health-bar-container {
+            width: 200px;
+            height: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+            position: relative;
+        }
+
+        .health-bar {
+            height: 100%;
+            transition: width 0.5s ease, background-color 0.3s;
+            border-radius: 10px;
+        }
+
+        .health-bar.player-health {
+            background: linear-gradient(90deg, #00b894, #55efc4);
+        }
+
+        .health-bar.monster-health {
+            background: linear-gradient(90deg, #d63031, #ff7675);
+        }
+
+        .health-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .attack-area {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .target-word {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .word-display {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+
+        .letter-box {
+            width: 50px;
+            height: 60px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .letter-box.correct {
+            background: #00b894;
+            color: white;
+            animation: letterCorrect 0.3s;
+        }
+
+        .letter-box.wrong {
+            background: #d63031;
+            color: white;
+            animation: letterWrong 0.3s;
+        }
+
+        .letter-box.current {
+            background: #fdcb6e;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(253, 203, 110, 0.6);
+        }
+
+        @keyframes letterCorrect {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes letterWrong {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .typing-input-adventure {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            display: block;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .typing-input-adventure:focus {
+            outline: none;
+            border-color: #fdcb6e;
+            box-shadow: 0 0 20px rgba(253, 203, 110, 0.5);
+        }
+
+        .attack-button {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .attack-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+        }
+
+        .attack-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .damage-number {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff7675;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            animation: damageFloat 1s forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes damageFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        .projectile {
+            position: absolute;
+            font-size: 2rem;
+            animation: projectileFly 0.8s forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes projectileFly {
+            0% {
+                left: 20%;
+                opacity: 1;
+            }
+            100% {
+                left: 70%;
+                opacity: 0;
+            }
+        }
+
+        .level-indicator {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .game-over-modal, .level-complete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: modalPop 0.5s;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-stats {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .modal-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .modal-button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background: #eee;
+            color: #333;
+        }
+
+        .animal-rescued {
+            font-size: 4rem;
+            animation: celebrate 0.5s infinite alternate;
+        }
+
+        @keyframes celebrate {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+
+        .combo-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fdcb6e;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .combo-display.show {
+            opacity: 1;
+            animation: comboPulse 0.5s infinite;
+        }
+
+        @keyframes comboPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> 返回
+    </button>
+
+    <div class="adventure-section">
+        <div class="game-container">
+            <div class="combo-display" id="combo-display">
+                🔥 COMBO x<span id="combo-count">0</span>
+            </div>
+
+            <div class="game-header">
+                <div class="level-indicator">
+                    <span class="level-badge">
+                        <i class="fas fa-flag"></i> 关卡 <span id="current-level">1</span>
+                    </span>
+                </div>
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">得分</div>
+                        <div class="stat-value" id="score">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">连击</div>
+                        <div class="stat-value" id="combo">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">拯救</div>
+                        <div class="stat-value" id="rescued">0/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="battle-area">
+                <!-- 玩家 -->
+                <div class="player">
+                    <div class="health-bar-container">
+                        <div class="health-bar player-health" id="player-health-bar" style="width: 100%;"></div>
+                        <div class="health-text" id="player-health-text">100/100</div>
+                    </div>
+                    <div class="player-sprite" id="player-sprite">🧙‍♂️</div>
+                    <div style="color: white; margin-top: 10px; font-weight: bold;">小勇士</div>
+                </div>
+
+                <!-- 怪物 -->
+                <div class="monster">
+                    <div class="health-bar-container">
+                        <div class="health-bar monster-health" id="monster-health-bar" style="width: 100%;"></div>
+                        <div class="health-text" id="monster-health-text">100/100</div>
+                    </div>
+                    <div class="monster-sprite" id="monster-sprite">🐉</div>
+                    <div style="color: white; margin-top: 10px; font-weight: bold;" id="monster-name">恶龙</div>
+                    <div class="animal-rescued" id="rescued-animal" style="display: none;">🐰</div>
+                </div>
+            </div>
+
+            <div class="attack-area">
+                <div class="target-word">
+                    <div style="color: white; font-size: 1.1rem; margin-bottom: 10px;" id="word-hint">
+                        输入单词来攻击怪物！
+                    </div>
+                    <div class="word-display" id="word-display">
+                        <!-- 字母框会动态生成 -->
+                    </div>
+                </div>
+                <input type="text" class="typing-input-adventure" id="typing-input-adventure" 
+                       placeholder="在这里打字..." autocomplete="off" autofocus>
+                <button class="attack-button" id="attack-button" onclick="attack()" disabled>
+                    <i class="fas fa-fire"></i> 攻击！
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div class="game-over-modal" id="game-over-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="game-over-title">💀 游戏结束</div>
+            <div class="animal-rescued" id="game-over-animal">🐰</div>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span>最终得分：</span>
+                    <strong id="final-score-modal">0</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>最高连击：</span>
+                    <strong id="final-combo-modal">0</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>拯救动物：</span>
+                    <strong id="final-rescued-modal">0</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>通过关卡：</span>
+                    <strong id="final-level-modal">1</strong>
+                </div>
+            </div>
+            <button class="modal-button primary" onclick="restartGame()">
+                <i class="fas fa-redo"></i> 再来一次
+            </button>
+            <button class="modal-button secondary" onclick="goBack()">
+                <i class="fas fa-home"></i> 返回首页
+            </button>
+        </div>
+    </div>
+
+    <!-- 关卡完成弹窗 -->
+    <div class="level-complete-modal" id="level-complete-modal">
+        <div class="modal-content">
+            <div class="modal-title">🎉 关卡完成！</div>
+            <div class="animal-rescued">🐰</div>
+            <p style="color: #666; margin: 20px 0;">你成功打败了怪物，拯救了小动物！</p>
+            <button class="modal-button primary" onclick="nextLevel()">
+                <i class="fas fa-arrow-right"></i> 下一关
+            </button>
+        </div>
+    </div>
+
+    <script src="typing-adventure-game.js"></script>
+</body>
+</html>
