@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词赛车 - 小键盘探险家</title>
+    <link rel="stylesheet" href="style.css?v=20260307">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .race-section {
+            display: block;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .race-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .race-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .race-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .race-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .track-lane {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .lane-marker {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,255,255,0.5) 0px,
+                rgba(255,255,255,0.5) 20px,
+                transparent 20px,
+                transparent 40px
+            );
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 50px;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background: repeating-linear-gradient(
+                0deg,
+                #fff 0px,
+                #fff 10px,
+                #000 10px,
+                #000 20px
+            );
+            z-index: 10;
+        }
+
+        .race-car {
+            font-size: 4rem;
+            position: absolute;
+            left: 0;
+            transition: left 0.5s ease-out;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            z-index: 20;
+        }
+
+        .race-car.player {
+            font-size: 5rem;
+        }
+
+        .race-car.enemy {
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+
+        .word-display-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .current-word {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .word-hint {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .word-letters {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .letter-tile {
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .letter-tile.correct {
+            background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+            animation: tileCorrect 0.3s;
+        }
+
+        .letter-tile.wrong {
+            background: linear-gradient(135deg, #d63031 0%, #ff7675 100%);
+            animation: tileWrong 0.3s;
+        }
+
+        .letter-tile.current {
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(253, 203, 110, 0.6);
+            background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%);
+        }
+
+        @keyframes tileCorrect {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes tileWrong {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .typing-input-race {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .typing-input-race:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .boost-button {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .boost-button:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+        }
+
+        .boost-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .boost-button i {
+            margin-right: 10px;
+        }
+
+        .race-position {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .position-item:last-child {
+            border-bottom: none;
+        }
+
+        .position-item.first {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .speed-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .speed-line {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: rgba(255,255,255,0.5);
+            animation: speedLine 0.5s linear infinite;
+        }
+
+        @keyframes speedLine {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+        }
+
+        .race-complete-modal, .race-game-over-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: modalPop 0.5s;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .trophy {
+            font-size: 5rem;
+            margin: 20px 0;
+            animation: celebrate 0.5s infinite alternate;
+        }
+
+        @keyframes celebrate {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+
+        .modal-stats {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .modal-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .modal-button.primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background: #eee;
+            color: #333;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 100;
+            animation: countdown 1s;
+        }
+
+        @keyframes countdown {
+            0% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .difficulty-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .difficulty-btn.active, .difficulty-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> 返回
+    </button>
+
+    <div class="race-section">
+        <div class="race-container">
+            <div class="race-header">
+                <div>
+                    <h2 style="margin: 0;">🏎️ 单词赛车</h2>
+                    <p style="margin: 5px 0 0 0; opacity: 0.9;">输入单词让赛车加速！</p>
+                </div>
+                <div class="race-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">圈数</div>
+                        <div class="stat-value" id="lap">1/3</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">得分</div>
+                        <div class="stat-value" id="score">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">速度</div>
+                        <div class="stat-value" id="speed">0 km/h</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="difficulty-selector">
+                <button class="difficulty-btn" onclick="setDifficulty('easy')">🟢 简单</button>
+                <button class="difficulty-btn active" onclick="setDifficulty('normal')">🟡 普通</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">🔴 困难</button>
+            </div>
+
+            <div class="race-track" id="race-track">
+                <div class="finish-line"></div>
+                
+                <!-- 玩家车道 -->
+                <div class="track-lane">
+                    <div class="lane-marker"></div>
+                    <div class="race-car player" id="player-car" style="left: 0%;">🏎️</div>
+                </div>
+                
+                <!-- 对手车道 -->
+                <div class="track-lane">
+                    <div class="lane-marker"></div>
+                    <div class="race-car enemy" id="enemy-car-1" style="left: 0%;">🚗</div>
+                </div>
+                
+                <div class="track-lane">
+                    <div class="lane-marker"></div>
+                    <div class="race-car enemy" id="enemy-car-2" style="left: 0%;">🚙</div>
+                </div>
+            </div>
+
+            <div class="race-position">
+                <div style="font-weight: bold; margin-bottom: 10px;">📊 当前排名</div>
+                <div id="position-display">
+                    <div class="position-item first">
+                        <span>🥇 第 1 名</span>
+                        <span id="position-text">你</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="word-display-area">
+                <div class="current-word">
+                    <div class="word-hint" id="word-hint">准备开始比赛...</div>
+                    <div class="word-letters" id="word-letters">
+                        <!-- 字母块动态生成 -->
+                    </div>
+                </div>
+                <input type="text" class="typing-input-race" id="typing-input-race" 
+                       placeholder="在这里输入单词..." autocomplete="off" disabled>
+                <button class="boost-button" id="boost-button" onclick="boost()" disabled>
+                    <i class="fas fa-fire"></i> 加速！
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 比赛完成弹窗 -->
+    <div class="race-complete-modal" id="race-complete-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="complete-title">🏆 冠军！</div>
+            <div class="trophy" id="complete-trophy">🏆</div>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span>最终得分：</span>
+                    <strong id="final-score-race">0</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>完成时间：</span>
+                    <strong id="final-time-race">0s</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>正确单词：</span>
+                    <strong id="final-words-race">0</strong>
+                </div>
+                <div class="modal-stat">
+                    <span>最高速度：</span>
+                    <strong id="final-speed-race">0 km/h</strong>
+                </div>
+            </div>
+            <button class="modal-button primary" onclick="restartRace()">
+                <i class="fas fa-redo"></i> 再来一次
+            </button>
+            <button class="modal-button secondary" onclick="goBack()">
+                <i class="fas fa-home"></i> 返回首页
+            </button>
+        </div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div class="race-game-over-modal" id="race-game-over-modal">
+        <div class="modal-content">
+            <div class="modal-title">💨 比赛结束</div>
+            <div class="trophy" id="game-over-trophy">🥈</div>
+            <p style="color: #666; margin: 20px 0;" id="game-over-message">你获得了第 2 名</p>
+            <button class="modal-button primary" onclick="restartRace()">
+                <i class="fas fa-redo"></i> 再来一次
+            </button>
+            <button class="modal-button secondary" onclick="goBack()">
+                <i class="fas fa-home"></i> 返回首页
+            </button>
+        </div>
+    </div>
+
+    <script src="word-race-game.js"></script>
+</body>
+</html>
