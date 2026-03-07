@@ -115,12 +115,6 @@ const gameData = {
             description: '输入单词让赛车前进',
             status: 'ready'
         },
-        'keyboard-hero': {
-            title: '键盘英雄',
-            icon: '🎸',
-            description: '跟随节奏敲击键盘',
-            status: 'coming-soon'
-        }
         'typing-adventure': {
             title: '打字冒险',
             icon: '🐉',
