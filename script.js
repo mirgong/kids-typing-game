@@ -16,7 +16,7 @@ const gameData = {
     wrongCount: 0,
     achievements: [],
     
-    // 课程数据 - 完整键盘版
+    // 课程数据 - MacBook 完整键盘版
     lessons: {
         1: {
             title: '字母探险',
@@ -53,9 +53,24 @@ const gameData = {
             ]
         },
         3: {
+            title: '符号世界',
+            icon: '🔣',
+            color: '#e74c3c',
+            challenges: [
+                { type: 'symbol', target: '-', hint: '请按下 - 键（减号）', animal: '➖' },
+                { type: 'symbol', target: '=', hint: '请按下 = 键（等号）', animal: '➗' },
+                { type: 'symbol', target: '[', hint: '请按下 [ 键（左括号）', animal: '📦' },
+                { type: 'symbol', target: ']', hint: '请按下 ] 键（右括号）', animal: '📦' },
+                { type: 'symbol', target: '\'', hint: '请按下 \' 键（引号）', animal: '💬' },
+                { type: 'symbol', target: '.', hint: '请按下 . 键（句号）', animal: '🔴' },
+                { type: 'symbol', target: ',', hint: '请按下 , 键（逗号）', animal: '🔵' },
+                { type: 'symbol', target: '/', hint: '请按下 / 键（斜杠）', animal: '➗' }
+            ]
+        },
+        4: {
             title: '单词森林',
             icon: '🌲',
-            color: '#e74c3c',
+            color: '#9b59b6',
             challenges: [
                 { type: 'word', target: 'CAT', hint: '小猫', animal: '🐱' },
                 { type: 'word', target: 'DOG', hint: '小狗', animal: '🐶' },
@@ -67,21 +82,6 @@ const gameData = {
                 { type: 'word', target: 'BIRD', hint: '小鸟', animal: '🐦' },
                 { type: 'word', target: 'BOOK', hint: '书本', animal: '📚' },
                 { type: 'word', target: 'BALL', hint: '球', animal: '⚽' }
-            ]
-        },
-        4: {
-            title: '标点符号',
-            icon: '🔣',
-            color: '#9b59b6',
-            challenges: [
-                { type: 'punctuation', target: '.', hint: '请按下 . 键（句号）', animal: '🔴' },
-                { type: 'punctuation', target: ',', hint: '请按下 , 键（逗号）', animal: '🔵' },
-                { type: 'punctuation', target: '/', hint: '请按下 / 键（斜杠）', animal: '➗' },
-                { type: 'punctuation', target: ';', hint: '请按下 ; 键（分号）', animal: '📍' },
-                { type: 'punctuation', target: 'HELLO.', hint: '输入 HELLO 加句号', animal: '👋' },
-                { type: 'punctuation', target: 'HI,THERE', hint: '输入 HI 加逗号加 THERE', animal: '💬' },
-                { type: 'punctuation', target: 'YES/NO', hint: '输入 YES 加斜杠加 NO', animal: '❓' },
-                { type: 'punctuation', target: 'WAIT;', hint: '输入 WAIT 加分号', animal: '⏸️' }
             ]
         },
         5: {
@@ -327,13 +327,31 @@ function updateChallenge() {
     highlightKeyboardKey(challenge.target.charAt(0));
 }
 
-// 高亮键盘键
+// 高亮键盘键 - 支持 MacBook 标准键盘
 function highlightKeyboardKey(key) {
     document.querySelectorAll('.keyboard-display .key').forEach(k => {
         k.classList.remove('active');
-        if (k.dataset.key === key.toUpperCase()) {
+        
+        const dataKey = k.dataset.key;
+        const upperKey = key.toUpperCase();
+        
+        // 匹配键位（支持多种表示方式）
+        if (dataKey === upperKey || 
+            dataKey === key || 
+            dataKey.toLowerCase() === upperKey.toLowerCase()) {
             k.classList.add('active');
         }
+        
+        // 特殊键位映射
+        if (key === ' ' && dataKey === ' ') k.classList.add('active');
+        if (key === 'Enter' && dataKey === 'Enter') k.classList.add('active');
+        if (key === 'Backspace' && dataKey === 'Backspace') k.classList.add('active');
+        if (key === 'Tab' && dataKey === 'Tab') k.classList.add('active');
+        if (key === 'Shift' && (dataKey === 'Shift' || dataKey === 'ShiftR')) k.classList.add('active');
+        if (key === 'CapsLock' && dataKey === 'CapsLock') k.classList.add('active');
+        if (key === 'Control' && (dataKey === 'Control' || dataKey === 'ControlR')) k.classList.add('active');
+        if (key === 'Option' && (dataKey === 'Option' || dataKey === 'OptionR')) k.classList.add('active');
+        if (key === 'Command' && (dataKey === 'Command' || dataKey === 'CommandR')) k.classList.add('active');
     });
 }
 
