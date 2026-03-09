@@ -181,22 +181,43 @@
                     </div>
                     
                     <div class="keyboard-display">
-                        <!-- 键盘显示区域 - 完整标准键盘 -->
-                        <!-- 数字行 -->
-                        <div class="keyboard-row">
-                            <div class="key" data-key="1">1</div>
-                            <div class="key" data-key="2">2</div>
-                            <div class="key" data-key="3">3</div>
-                            <div class="key" data-key="4">4</div>
-                            <div class="key" data-key="5">5</div>
-                            <div class="key" data-key="6">6</div>
-                            <div class="key" data-key="7">7</div>
-                            <div class="key" data-key="8">8</div>
-                            <div class="key" data-key="9">9</div>
-                            <div class="key" data-key="0">0</div>
+                        <!-- 键盘显示区域 - MacBook 标准键盘布局 -->
+                        <!-- 功能键行 -->
+                        <div class="keyboard-row function-row">
+                            <div class="key function-key" data-key="Escape">Esc</div>
+                            <div class="key function-key" data-key="F1">F1</div>
+                            <div class="key function-key" data-key="F2">F2</div>
+                            <div class="key function-key" data-key="F3">F3</div>
+                            <div class="key function-key" data-key="F4">F4</div>
+                            <div class="key function-key" data-key="F5">F5</div>
+                            <div class="key function-key" data-key="F6">F6</div>
+                            <div class="key function-key" data-key="F7">F7</div>
+                            <div class="key function-key" data-key="F8">F8</div>
+                            <div class="key function-key" data-key="F9">F9</div>
+                            <div class="key function-key" data-key="F10">F10</div>
+                            <div class="key function-key" data-key="F11">F11</div>
+                            <div class="key function-key" data-key="F12">F12</div>
                         </div>
-                        <!-- 字母第一行 -->
+                        <!-- 数字行（带符号） -->
                         <div class="keyboard-row">
+                            <div class="key" data-key="`" data-shift="~">`</div>
+                            <div class="key" data-key="1" data-shift="!">1</div>
+                            <div class="key" data-key="2" data-shift="@">2</div>
+                            <div class="key" data-key="3" data-shift="#">3</div>
+                            <div class="key" data-key="4" data-shift="$">4</div>
+                            <div class="key" data-key="5" data-shift="%">5</div>
+                            <div class="key" data-key="6" data-shift="^">6</div>
+                            <div class="key" data-key="7" data-shift="&">7</div>
+                            <div class="key" data-key="8" data-shift="*">8</div>
+                            <div class="key" data-key="9" data-shift="(">9</div>
+                            <div class="key" data-key="0" data-shift=")">0</div>
+                            <div class="key" data-key="-" data-shift="_">-</div>
+                            <div class="key" data-key="=" data-shift="+">=</div>
+                            <div class="key delete-key" data-key="Backspace">⌫</div>
+                        </div>
+                        <!-- Tab 行 -->
+                        <div class="keyboard-row">
+                            <div class="key tab-key" data-key="Tab">Tab</div>
                             <div class="key" data-key="Q">Q</div>
                             <div class="key" data-key="W">W</div>
                             <div class="key" data-key="E">E</div>
@@ -207,9 +228,13 @@
                             <div class="key" data-key="I">I</div>
                             <div class="key" data-key="O">O</div>
                             <div class="key" data-key="P">P</div>
+                            <div class="key" data-key="[" data-shift="{">[</div>
+                            <div class="key" data-key="]" data-shift="}">]</div>
+                            <div class="key" data-key="\" data-shift="|">\</div>
                         </div>
-                        <!-- 字母第二行 -->
+                        <!-- Caps Lock 行 -->
                         <div class="keyboard-row">
+                            <div class="key caps-key" data-key="CapsLock">Caps</div>
                             <div class="key" data-key="A">A</div>
                             <div class="key" data-key="S">S</div>
                             <div class="key" data-key="D">D</div>
@@ -219,10 +244,13 @@
                             <div class="key" data-key="J">J</div>
                             <div class="key" data-key="K">K</div>
                             <div class="key" data-key="L">L</div>
-                            <div class="key" data-key=";">;</div>
+                            <div class="key" data-key=";" data-shift=":">;</div>
+                            <div class="key" data-key="'" data-shift='"">'</div>
+                            <div class="key return-key" data-key="Enter">↩</div>
                         </div>
-                        <!-- 字母第三行 -->
+                        <!-- Shift 行 -->
                         <div class="keyboard-row">
+                            <div class="key shift-key" data-key="Shift">Shift</div>
                             <div class="key" data-key="Z">Z</div>
                             <div class="key" data-key="X">X</div>
                             <div class="key" data-key="C">C</div>
@@ -230,13 +258,20 @@
                             <div class="key" data-key="B">B</div>
                             <div class="key" data-key="N">N</div>
                             <div class="key" data-key="M">M</div>
-                            <div class="key" data-key=",">,</div>
-                            <div class="key" data-key=".">.</div>
-                            <div class="key" data-key="/">/</div>
+                            <div class="key" data-key="," data-shift="<">,</div>
+                            <div class="key" data-key="." data-shift=">">.</div>
+                            <div class="key" data-key="/" data-shift="?">/</div>
+                            <div class="key shift-key" data-key="ShiftR">Shift</div>
                         </div>
-                        <!-- 空格键 -->
+                        <!-- 空格行 -->
                         <div class="keyboard-row">
-                            <div class="key space-key" data-key=" ">空格</div>
+                            <div class="key modifier-key" data-key="Control">Ctrl</div>
+                            <div class="key modifier-key" data-key="Option">⌥</div>
+                            <div class="key modifier-key" data-key="Command">⌘</div>
+                            <div class="key space-key" data-key=" "> </div>
+                            <div class="key modifier-key" data-key="CommandR">⌘</div>
+                            <div class="key modifier-key" data-key="OptionR">⌥</div>
+                            <div class="key modifier-key" data-key="ControlR">Ctrl</div>
                         </div>
                     </div>
                     
