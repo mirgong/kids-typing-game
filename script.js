@@ -16,7 +16,7 @@ const gameData = {
     wrongCount: 0,
     achievements: [],
     
-    // 课程数据 - 扩展版
+    // 课程数据 - 完整键盘版
     lessons: {
         1: {
             title: '字母探险',
@@ -36,9 +36,26 @@ const gameData = {
             ]
         },
         2: {
+            title: '数字乐园',
+            icon: '🔢',
+            color: '#f39c12',
+            challenges: [
+                { type: 'number', target: '1', hint: '请按下 1 键', animal: '☝️' },
+                { type: 'number', target: '2', hint: '请按下 2 键', animal: '✌️' },
+                { type: 'number', target: '3', hint: '请按下 3 键', animal: '🤟' },
+                { type: 'number', target: '4', hint: '请按下 4 键', animal: '🍀' },
+                { type: 'number', target: '5', hint: '请按下 5 键', animal: '🖐️' },
+                { type: 'number', target: '6', hint: '请按下 6 键', animal: '🎲' },
+                { type: 'number', target: '7', hint: '请按下 7 键', animal: '🌈' },
+                { type: 'number', target: '8', hint: '请按下 8 键', animal: '🎱' },
+                { type: 'number', target: '9', hint: '请按下 9 键', animal: '🐱' },
+                { type: 'number', target: '0', hint: '请按下 0 键', animal: '⭕' }
+            ]
+        },
+        3: {
             title: '单词森林',
             icon: '🌲',
-            color: '#f39c12',
+            color: '#e74c3c',
             challenges: [
                 { type: 'word', target: 'CAT', hint: '小猫', animal: '🐱' },
                 { type: 'word', target: 'DOG', hint: '小狗', animal: '🐶' },
@@ -52,10 +69,25 @@ const gameData = {
                 { type: 'word', target: 'BALL', hint: '球', animal: '⚽' }
             ]
         },
-        3: {
+        4: {
+            title: '标点符号',
+            icon: '🔣',
+            color: '#9b59b6',
+            challenges: [
+                { type: 'punctuation', target: '.', hint: '请按下 . 键（句号）', animal: '🔴' },
+                { type: 'punctuation', target: ',', hint: '请按下 , 键（逗号）', animal: '🔵' },
+                { type: 'punctuation', target: '/', hint: '请按下 / 键（斜杠）', animal: '➗' },
+                { type: 'punctuation', target: ';', hint: '请按下 ; 键（分号）', animal: '📍' },
+                { type: 'punctuation', target: 'HELLO.', hint: '输入 HELLO 加句号', animal: '👋' },
+                { type: 'punctuation', target: 'HI,THERE', hint: '输入 HI 加逗号加 THERE', animal: '💬' },
+                { type: 'punctuation', target: 'YES/NO', hint: '输入 YES 加斜杠加 NO', animal: '❓' },
+                { type: 'punctuation', target: 'WAIT;', hint: '输入 WAIT 加分号', animal: '⏸️' }
+            ]
+        },
+        5: {
             title: '句子城堡',
             icon: '🏰',
-            color: '#e74c3c',
+            color: '#1abc9c',
             challenges: [
                 { type: 'sentence', target: 'I LIKE CATS.', hint: '我喜欢猫咪', animal: '🐱' },
                 { type: 'sentence', target: 'THE SUN IS HOT.', hint: '太阳很热', animal: '☀️' },
@@ -66,27 +98,18 @@ const gameData = {
                 { type: 'sentence', target: 'I LOVE TO READ BOOKS.', hint: '我喜欢读书', animal: '📚' }
             ]
         },
-        4: {
-            title: '数字乐园',
-            icon: '🔢',
-            color: '#9b59b6',
-            challenges: [
-                { type: 'number', target: '123', hint: '请输入数字：123', animal: '🔢' },
-                { type: 'number', target: '456', hint: '请输入数字：456', animal: '🔢' },
-                { type: 'number', target: '789', hint: '请输入数字：789', animal: '🔢' },
-                { type: 'number', target: '2026', hint: '请输入年份：2026', animal: '📅' },
-                { type: 'number', target: '100', hint: '请输入数字：100', animal: '💯' }
-            ]
-        },
-        5: {
+        6: {
             title: '混合挑战',
             icon: '🎯',
-            color: '#1abc9c',
+            color: '#3498db',
             challenges: [
                 { type: 'mixed', target: 'HELLO WORLD', hint: '你好世界', animal: '🌍' },
                 { type: 'mixed', target: 'I AM 10 YEARS OLD', hint: '我 10 岁了', animal: '🎂' },
                 { type: 'mixed', target: 'THERE ARE 7 DAYS', hint: '有 7 天', animal: '📅' },
-                { type: 'mixed', target: 'MY SCORE IS 100', hint: '我的分数是 100', animal: '💯' }
+                { type: 'mixed', target: 'MY SCORE IS 100', hint: '我的分数是 100', animal: '💯' },
+                { type: 'mixed', target: 'CALL 911', hint: '拨打 911', animal: '🚨' },
+                { type: 'mixed', target: 'YES, I CAN!', hint: '是的，我能！', animal: '💪' },
+                { type: 'mixed', target: 'WAIT... STOP!', hint: '等等... 停下！', animal: '🛑' }
             ]
         }
     },

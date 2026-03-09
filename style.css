@@ -464,6 +464,16 @@ body::before {
     box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
 }
 
+/* 空格键样式 */
+.keyboard-row .key.space-key {
+    width: 300px;
+    background: #34495e;
+}
+
+.keyboard-row .key.space-key.active {
+    background: #4ecdc4;
+}
+
 .input-area {
     display: flex;
     gap: 15px;
